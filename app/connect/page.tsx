@@ -25,10 +25,13 @@ import {
   MapPin,
   Clock,
 } from "lucide-react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export default function ConnectPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
+    <div className="min-h-screen bg-slate-950">
+      <Header />
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 bg-gradient-to-r from-green-600 to-teal-700 text-white">
         <div className="absolute inset-0 bg-black/20"></div>
@@ -511,6 +514,7 @@ export default function ConnectPage() {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 }

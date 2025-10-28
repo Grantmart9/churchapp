@@ -32,19 +32,15 @@ export default function Header() {
         setIsScrolling(false);
       }, 150);
 
-      // Only hide/show header when actually scrolling, not when page loads
-      if (currentScrollY > 50) {
-        // Only apply scroll behavior after initial scroll
-        // Show header when scrolling up or at the top
-        if (currentScrollY <= 0) {
-          setIsVisible(true);
-        } else if (currentScrollY > lastScrollY) {
-          // Scrolling down - hide header
-          setIsVisible(false);
-        } else {
-          // Scrolling up - show header
-          setIsVisible(true);
-        }
+      // Always show header at the top of the page
+      if (currentScrollY <= 0) {
+        setIsVisible(true);
+      } else if (currentScrollY > lastScrollY && currentScrollY > 50) {
+        // Scrolling down and past threshold - hide header
+        setIsVisible(false);
+      } else if (currentScrollY < lastScrollY) {
+        // Scrolling up - show header
+        setIsVisible(true);
       }
 
       setLastScrollY(currentScrollY);
@@ -70,16 +66,16 @@ export default function Header() {
           transition={{ duration: 0.3, ease: "easeInOut" }}
           className={`fixed top-0 left-0 right-0 z-50 ${
             isScrolled
-              ? "bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-100"
-              : "bg-white shadow-sm"
+              ? "bg-slate-900/95 backdrop-blur-md shadow-lg border-b border-slate-700"
+              : "bg-slate-900/90 backdrop-blur-sm shadow-sm"
           }`}
         >
           <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
               {/* Logo */}
               <div className="flex items-center space-x-2">
-                <MapPin className="h-6 w-6 text-blue-600" />
-                <span className="text-xl font-bold text-gray-900">
+                <MapPin className="h-6 w-6 text-cyan-400" />
+                <span className="text-xl font-bold text-white">
                   FaithConnect
                 </span>
               </div>
@@ -88,25 +84,25 @@ export default function Header() {
               <div className="hidden md:flex items-center space-x-8">
                 <Link
                   href="/about"
-                  className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+                  className="text-gray-300 hover:text-cyan-400 transition-colors font-medium"
                 >
                   About
                 </Link>
                 <Link
                   href="/connect"
-                  className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+                  className="text-gray-300 hover:text-cyan-400 transition-colors font-medium"
                 >
                   Connect
                 </Link>
                 <Link
                   href="/events"
-                  className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+                  className="text-gray-300 hover:text-cyan-400 transition-colors font-medium"
                 >
                   Events
                 </Link>
                 <Link
                   href="/resources"
-                  className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+                  className="text-gray-300 hover:text-cyan-400 transition-colors font-medium"
                 >
                   Resources
                 </Link>
@@ -114,12 +110,12 @@ export default function Header() {
 
               {/* Desktop CTA Buttons */}
               <div className="hidden md:flex items-center space-x-4">
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                <Button className="bg-cyan-600 hover:bg-cyan-700 text-white">
                   Give
                 </Button>
                 <Button
                   variant="outline"
-                  className="border-gray-300 text-gray-700"
+                  className="border-cyan-500 text-cyan-400 hover:bg-cyan-950"
                 >
                   Watch Live
                 </Button>
@@ -129,7 +125,7 @@ export default function Header() {
               <div className="md:hidden">
                 <button
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="text-gray-700 hover:text-blue-600 transition-colors"
+                  className="text-gray-300 hover:text-cyan-400 transition-colors"
                 >
                   {isMobileMenuOpen ? (
                     <X className="h-6 w-6" />
@@ -146,40 +142,40 @@ export default function Header() {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
-                className="md:hidden bg-white border-t border-gray-200"
+                className="md:hidden bg-slate-800 border-t border-slate-700"
               >
                 <div className="px-2 pt-2 pb-3 space-y-1">
                   <Link
                     href="/about"
-                    className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md font-medium"
+                    className="block px-3 py-2 text-gray-300 hover:text-cyan-400 hover:bg-slate-700 rounded-md font-medium"
                   >
                     About
                   </Link>
                   <Link
                     href="/connect"
-                    className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md font-medium"
+                    className="block px-3 py-2 text-gray-300 hover:text-cyan-400 hover:bg-slate-700 rounded-md font-medium"
                   >
                     Connect
                   </Link>
                   <Link
                     href="/events"
-                    className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md font-medium"
+                    className="block px-3 py-2 text-gray-300 hover:text-cyan-400 hover:bg-slate-700 rounded-md font-medium"
                   >
                     Events
                   </Link>
                   <Link
                     href="/resources"
-                    className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md font-medium"
+                    className="block px-3 py-2 text-gray-300 hover:text-cyan-400 hover:bg-slate-700 rounded-md font-medium"
                   >
                     Resources
                   </Link>
                   <div className="px-3 py-2 space-y-2">
-                    <Button className="bg-blue-600 hover:bg-blue-700 text-white w-full">
+                    <Button className="bg-cyan-600 hover:bg-cyan-700 text-white w-full">
                       Give
                     </Button>
                     <Button
                       variant="outline"
-                      className="border-gray-300 text-gray-700 w-full"
+                      className="border-cyan-500 text-cyan-400 hover:bg-slate-700 w-full"
                     >
                       Watch Live
                     </Button>

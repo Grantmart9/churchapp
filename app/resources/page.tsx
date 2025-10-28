@@ -21,10 +21,13 @@ import {
   Users,
   Heart,
 } from "lucide-react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export default function ResourcesPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white">
+    <div className="min-h-screen bg-slate-950">
+      <Header />
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 bg-gradient-to-r from-purple-600 to-pink-700 text-white">
         <div className="absolute inset-0 bg-black/20"></div>
@@ -449,6 +452,7 @@ export default function ResourcesPage() {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 }

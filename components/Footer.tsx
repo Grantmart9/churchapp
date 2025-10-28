@@ -37,7 +37,7 @@ const socialLinks = [
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-100">
+    <footer className="bg-slate-900 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Church Info */}
@@ -50,20 +50,20 @@ export default function Footer() {
           >
             <div className="flex items-center space-x-2 mb-4">
               <MapPin className="h-5 w-5 text-blue-600" />
-              <h3 className="text-lg font-bold text-gray-900">FaithConnect</h3>
+              <h3 className="text-lg font-bold text-white">FaithConnect</h3>
             </div>
             <div className="space-y-2">
-              <div className="flex items-center space-x-2 text-gray-600">
+              <div className="flex items-center space-x-2 text-gray-400">
                 <MapPin className="h-4 w-4" />
                 <span className="text-sm">
                   123 Church Street, Faith City, FC 12345
                 </span>
               </div>
-              <div className="flex items-center space-x-2 text-gray-600">
+              <div className="flex items-center space-x-2 text-gray-400">
                 <Phone className="h-4 w-4" />
                 <span className="text-sm">(555) 123-4567</span>
               </div>
-              <div className="flex items-center space-x-2 text-gray-600">
+              <div className="flex items-center space-x-2 text-gray-400">
                 <Mail className="h-4 w-4" />
                 <span className="text-sm">info@faithconnect.org</span>
               </div>
@@ -78,7 +78,7 @@ export default function Footer() {
             viewport={{ once: true }}
             className="space-y-4"
           >
-            <h4 className="text-lg font-semibold text-gray-900 mb-4">
+            <h4 className="text-lg font-semibold text-white mb-4">
               Quick Links
             </h4>
             <ul className="space-y-2">
@@ -86,7 +86,7 @@ export default function Footer() {
                 <li key={link.name}>
                   <a
                     href={link.href}
-                    className="text-gray-600 hover:text-blue-600 transition-colors duration-200 text-sm"
+                    className="text-gray-400 hover:text-cyan-400 transition-colors duration-200 text-sm"
                   >
                     {link.name}
                   </a>
@@ -103,10 +103,10 @@ export default function Footer() {
             viewport={{ once: true }}
             className="space-y-4"
           >
-            <h4 className="text-lg font-semibold text-gray-900 mb-4">
+            <h4 className="text-lg font-semibold text-white mb-4">
               Service Times
             </h4>
-            <div className="space-y-2 text-sm text-gray-600">
+            <div className="space-y-2 text-sm text-gray-400">
               <div className="flex justify-between">
                 <span>Sunday Service</span>
                 <span className="font-medium">10:00 AM</span>
@@ -134,10 +134,10 @@ export default function Footer() {
             viewport={{ once: true }}
             className="space-y-4"
           >
-            <h4 className="text-lg font-semibold text-gray-900 mb-4">
+            <h4 className="text-lg font-semibold text-white mb-4">
               Stay Updated
             </h4>
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm text-gray-400 mb-4">
               Subscribe to our newsletter for weekly updates and spiritual
               inspiration.
             </p>
@@ -145,9 +145,9 @@ export default function Footer() {
               <input
                 type="email"
                 placeholder="Your email address"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full px-3 py-2 border border-slate-700 bg-slate-800 rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-sm text-white placeholder-gray-500"
               />
-              <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md font-medium transition-colors duration-200 text-sm">
+              <button className="w-full bg-cyan-600 hover:bg-cyan-700 text-white py-2 px-4 rounded-md font-medium transition-colors duration-200 text-sm">
                 Subscribe
               </button>
             </div>
@@ -160,10 +160,10 @@ export default function Footer() {
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.4 }}
           viewport={{ once: true }}
-          className="mt-12 pt-8 border-t border-gray-200"
+          className="mt-12 pt-8 border-t border-slate-800"
         >
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-gray-400">
               © 2024 FaithConnect. All rights reserved.
             </div>
 
@@ -177,7 +177,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   whileHover={{ scale: 1.2, y: -3 }}
                   transition={{ duration: 0.2 }}
-                  className="text-gray-400 hover:text-blue-600 transition-colors duration-200"
+                  className="text-gray-500 hover:text-cyan-400 transition-colors duration-200"
                   aria-label={social.name}
                 >
                   {social.icon}
