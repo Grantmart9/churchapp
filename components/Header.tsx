@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { MapPin, Menu, X } from "lucide-react";
+import { MapPin, Menu, X, LogIn, LogOut } from "lucide-react";
 import Link from "next/link";
+import { useSupabase } from "./providers";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -12,6 +13,8 @@ export default function Header() {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
   const [isScrolling, setIsScrolling] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const { supabase } = useSupabase();
 
   useEffect(() => {
     let scrollTimeout: NodeJS.Timeout;
@@ -55,6 +58,71 @@ export default function Header() {
       }
     };
   }, [lastScrollY]);
+
+  useEffect(() => {
+    // Check for active session on mount
+    const checkSession = async () => {
+      const user = await supabase.auth.user();
+      setUser(user ?? null);
+    };
+
+    checkSession();
+
+    // Listen for auth changes
+    console.log("DEBUG: Setting up auth state change listener");
+    const authResponse = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("DEBUG: Auth state changed:", event, session?.user?.email);
+      setUser(session?.user ?? null);
+    });
+
+    console.log("DEBUG: Auth response structure:", authResponse);
+    console.log("DEBUG: Subscription object:", authResponse.data);
+    console.log("DEBUG: Subscription type:", typeof authResponse.data);
+
+    // Handle different Supabase client structures
+    let unsubscribe: (() => void) | null = null;
+
+    if (authResponse.data) {
+      // Check for nested subscription structure (mock client)
+      if (
+        authResponse.data.subscription &&
+        typeof authResponse.data.subscription.unsubscribe === "function"
+      ) {
+        unsubscribe = authResponse.data.subscription.unsubscribe;
+        console.log("DEBUG: Found nested subscription.unsubscribe");
+      }
+      // Check for direct unsubscribe method (real client)
+      else if (typeof authResponse.data.unsubscribe === "function") {
+        unsubscribe = authResponse.data.unsubscribe;
+        console.log("DEBUG: Found direct subscription.unsubscribe");
+      }
+      // Check if data itself is the unsubscribe function (some versions)
+      else if (typeof authResponse.data === "function") {
+        unsubscribe = authResponse.data;
+        console.log("DEBUG: Data itself is the unsubscribe function");
+      }
+    }
+
+    return () => {
+      console.log("DEBUG: Cleaning up auth subscription");
+      console.log("DEBUG: Unsubscribe function:", unsubscribe);
+      console.log("DEBUG: Unsubscribe type:", typeof unsubscribe);
+      if (unsubscribe) {
+        if (typeof unsubscribe === "function") {
+          unsubscribe();
+          console.log("DEBUG: Successfully unsubscribed");
+        } else {
+          console.log("DEBUG: Unsubscribe is not a function, skipping cleanup");
+        }
+      } else {
+        console.log("DEBUG: No unsubscribe method found, skipping cleanup");
+      }
+    };
+  }, [supabase.auth]);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
 
   return (
     <AnimatePresence>
@@ -110,6 +178,26 @@ export default function Header() {
 
               {/* Desktop CTA Buttons */}
               <div className="hidden md:flex items-center space-x-4">
+                {user ? (
+                  <Button
+                    onClick={handleLogout}
+                    variant="outline"
+                    className="border-cyan-500 text-cyan-400 hover:bg-cyan-950 flex items-center gap-2"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Logout
+                  </Button>
+                ) : (
+                  <Link href="/connect/register">
+                    <Button
+                      variant="outline"
+                      className="border-cyan-500 text-cyan-400 hover:bg-cyan-950 flex items-center gap-2"
+                    >
+                      <LogIn className="h-4 w-4" />
+                      Login
+                    </Button>
+                  </Link>
+                )}
                 <Button className="bg-cyan-600 hover:bg-cyan-700 text-white">
                   Give
                 </Button>
@@ -170,6 +258,26 @@ export default function Header() {
                     Resources
                   </Link>
                   <div className="px-3 py-2 space-y-2">
+                    {user ? (
+                      <Button
+                        onClick={handleLogout}
+                        variant="outline"
+                        className="border-cyan-500 text-cyan-400 hover:bg-slate-700 w-full flex items-center justify-center gap-2"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        Logout
+                      </Button>
+                    ) : (
+                      <Link href="/connect/register" className="w-full">
+                        <Button
+                          variant="outline"
+                          className="border-cyan-500 text-cyan-400 hover:bg-slate-700 w-full flex items-center justify-center gap-2"
+                        >
+                          <LogIn className="h-4 w-4" />
+                          Login
+                        </Button>
+                      </Link>
+                    )}
                     <Button className="bg-cyan-600 hover:bg-cyan-700 text-white w-full">
                       Give
                     </Button>

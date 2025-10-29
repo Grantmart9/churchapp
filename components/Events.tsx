@@ -9,50 +9,29 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Calendar, Clock, Users, Heart } from "lucide-react";
+import { Calendar, Clock, Users, Heart, MapPin } from "lucide-react";
+import { useSupabase } from "./providers";
+
+interface Event {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  location: string;
+  image_url: string;
+  created_at: string;
+  updated_at: string;
+}
 
 interface EventCard {
-  id: number;
+  id: string;
   title: string;
   description: string;
   image: string;
   icon: React.ReactNode;
+  date: string;
+  location: string;
 }
-
-const events: EventCard[] = [
-  {
-    id: 1,
-    title: "Sunday Service",
-    description: "Join us for our weekly service at 10 AM",
-    image:
-      "https://images.unsplash.com/photo-1515943073294-77dfc14c7a7b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
-    icon: <Calendar className="h-5 w-5" />,
-  },
-  {
-    id: 2,
-    title: "Community Outreach",
-    description: "Serving our community with love and compassion",
-    image:
-      "https://images.unsplash.com/photo-1559027615-cd4628192c4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
-    icon: <Heart className="h-5 w-5" />,
-  },
-  {
-    id: 3,
-    title: "Youth Ministry",
-    description: "Engaging activities for young people",
-    image:
-      "https://images.unsplash.com/photo-1529156069898-49953e39b3fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
-    icon: <Users className="h-5 w-5" />,
-  },
-  {
-    id: 4,
-    title: "Volunteer Day",
-    description: "Help us make a difference",
-    image:
-      "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
-    icon: <Clock className="h-5 w-5" />,
-  },
-];
 
 interface TimeLeft {
   days: number;
@@ -62,40 +41,168 @@ interface TimeLeft {
 }
 
 export default function Events() {
+  const [events, setEvents] = useState<EventCard[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [nextEvent, setNextEvent] = useState<Event | null>(null);
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({
     days: 0,
     hours: 0,
     minutes: 0,
     seconds: 0,
   });
+  const { supabase } = useSupabase();
 
   useEffect(() => {
-    const calculateTimeLeft = () => {
-      const targetDate = new Date();
-      targetDate.setDate(targetDate.getDate() + 7); // 7 days from now
-      targetDate.setHours(10, 0, 0, 0); // 10:00 AM
+    const fetchEvents = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("events")
+          .select("*")
+          .order("date", { ascending: true });
 
-      const difference = targetDate.getTime() - new Date().getTime();
+        if (error) {
+          console.error("Error fetching events:", error);
+          // Fallback to mock data if database is not set up
+          setEvents([
+            {
+              id: "1",
+              title: "Sunday Service",
+              description: "Join us for our weekly service at 10 AM",
+              image:
+                "https://images.unsplash.com/photo-1515943073294-77dfc14c7a7b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
+              icon: <Calendar className="h-5 w-5" />,
+              date: new Date(
+                Date.now() + 7 * 24 * 60 * 60 * 1000
+              ).toISOString(),
+              location: "Main Sanctuary",
+            },
+            {
+              id: "2",
+              title: "Community Outreach",
+              description: "Serving our community with love and compassion",
+              image:
+                "https://images.unsplash.com/photo-1559027615-cd4628192c4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
+              icon: <Heart className="h-5 w-5" />,
+              date: new Date(
+                Date.now() + 14 * 24 * 60 * 60 * 1000
+              ).toISOString(),
+              location: "Community Center",
+            },
+            {
+              id: "3",
+              title: "Youth Ministry",
+              description: "Engaging activities for young people",
+              image:
+                "https://images.unsplash.com/photo-1529156069898-49953e39b3fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
+              icon: <Users className="h-5 w-5" />,
+              date: new Date(
+                Date.now() + 21 * 24 * 60 * 60 * 1000
+              ).toISOString(),
+              location: "Youth Hall",
+            },
+            {
+              id: "4",
+              title: "Volunteer Day",
+              description: "Help us make a difference",
+              image:
+                "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
+              icon: <Clock className="h-5 w-5" />,
+              date: new Date(
+                Date.now() + 28 * 24 * 60 * 60 * 1000
+              ).toISOString(),
+              location: "Various Locations",
+            },
+          ]);
+        } else if (data) {
+          const formattedEvents: EventCard[] = data.map((event: Event) => ({
+            id: event.id,
+            title: event.title,
+            description: event.description,
+            image:
+              event.image_url ||
+              "https://images.unsplash.com/photo-1515943073294-77dfc14c7a7b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
+            icon: <Calendar className="h-5 w-5" />,
+            date: event.date,
+            location: event.location || "TBD",
+          }));
+          setEvents(formattedEvents);
 
-      if (difference > 0) {
-        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-        const hours = Math.floor(
-          (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        );
-        const minutes = Math.floor(
-          (difference % (1000 * 60 * 60)) / (1000 * 60)
-        );
-        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+          // Set next upcoming event for countdown
+          const upcomingEvents = data
+            .filter((event: Event) => new Date(event.date) > new Date())
+            .sort(
+              (a: Event, b: Event) =>
+                new Date(a.date).getTime() - new Date(b.date).getTime()
+            );
 
-        setTimeLeft({ days, hours, minutes, seconds });
+          if (upcomingEvents.length > 0) {
+            setNextEvent(upcomingEvents[0]);
+          }
+        }
+      } catch (error) {
+        console.error("Error in fetchEvents:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    calculateTimeLeft();
-    const timer = setInterval(calculateTimeLeft, 1000);
+    fetchEvents();
+  }, [supabase]);
 
-    return () => clearInterval(timer);
-  }, []);
+  useEffect(() => {
+    if (!nextEvent) {
+      // Fallback countdown to next Sunday service
+      const calculateTimeLeft = () => {
+        const targetDate = new Date();
+        targetDate.setDate(targetDate.getDate() + (7 - targetDate.getDay())); // Next Sunday
+        targetDate.setHours(10, 0, 0, 0); // 10:00 AM
+
+        const difference = targetDate.getTime() - new Date().getTime();
+
+        if (difference > 0) {
+          const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+          const hours = Math.floor(
+            (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+          );
+          const minutes = Math.floor(
+            (difference % (1000 * 60 * 60)) / (1000 * 60)
+          );
+          const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+          setTimeLeft({ days, hours, minutes, seconds });
+        }
+      };
+
+      calculateTimeLeft();
+      const timer = setInterval(calculateTimeLeft, 1000);
+
+      return () => clearInterval(timer);
+    } else {
+      // Countdown to next event from database
+      const calculateTimeLeft = () => {
+        const targetDate = new Date(nextEvent.date);
+        const difference = targetDate.getTime() - new Date().getTime();
+
+        if (difference > 0) {
+          const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+          const hours = Math.floor(
+            (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+          );
+          const minutes = Math.floor(
+            (difference % (1000 * 60 * 60)) / (1000 * 60)
+          );
+          const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+          setTimeLeft({ days, hours, minutes, seconds });
+        }
+      };
+
+      calculateTimeLeft();
+      const timer = setInterval(calculateTimeLeft, 1000);
+
+      return () => clearInterval(timer);
+    }
+  }, [nextEvent]);
 
   return (
     <section id="events" className="py-20 bg-gray-50">
@@ -139,6 +246,16 @@ export default function Events() {
                   </div>
                 </div>
                 <CardContent className="p-6">
+                  <div className="flex items-center justify-center space-x-4 text-sm text-gray-500 mb-2">
+                    <div className="flex items-center space-x-1">
+                      <MapPin className="h-4 w-4" />
+                      <span>{event.location}</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <Calendar className="h-4 w-4" />
+                      <span>{new Date(event.date).toLocaleDateString()}</span>
+                    </div>
+                  </div>
                   <CardDescription className="text-gray-600 text-center">
                     {event.description}
                   </CardDescription>
@@ -158,8 +275,16 @@ export default function Events() {
         >
           <div className="text-center mb-8">
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              Next Event Starts In
+              {nextEvent
+                ? `Next Event: ${nextEvent.title}`
+                : "Next Sunday Service Starts In"}
             </h3>
+            {nextEvent && (
+              <p className="text-gray-600">
+                {new Date(nextEvent.date).toLocaleDateString()} at{" "}
+                {new Date(nextEvent.date).toLocaleTimeString()}
+              </p>
+            )}
           </div>
           <div className="grid grid-cols-4 gap-4">
             {[

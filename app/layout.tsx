@@ -1,15 +1,5 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+// DEBUG: Simplified layout without authentication to prevent redirect loops
 import "./globals.css";
-import { Providers } from "@/components/providers";
-
-const inter = Inter({ subsets: ["latin"] });
-
-export const metadata: Metadata = {
-  title: "FaithConnect",
-  description:
-    "Join our vibrant community of faith, hope, and love. Experience the power of connection and spiritual growth.",
-};
 
 export default function RootLayout({
   children,
@@ -18,9 +8,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <Providers>{children}</Providers>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
